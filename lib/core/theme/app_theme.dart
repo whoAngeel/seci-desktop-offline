@@ -21,7 +21,10 @@ class AppTheme {
       surface: AppColors.background,
       onSurface: Colors.black,
     ),
-
+    // cardTheme: CardTheme(
+    //   elevation: 2,
+    //   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+    // ),
     textTheme: appTextTheme,
   );
 
