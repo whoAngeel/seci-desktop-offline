@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:seci_desktop/core/theme/app_colors.dart';
+import 'package:seci_desktop/core/theme/app_text_theme.dart';
 
 class AppTheme {
   // tema claro
@@ -21,33 +22,7 @@ class AppTheme {
       onSurface: Colors.black,
     ),
 
-    textTheme: const TextTheme(
-      bodyLarge: TextStyle(
-        fontSize: 16,
-        fontWeight: FontWeight.normal,
-        color: Colors.black,
-      ),
-      bodyMedium: TextStyle(
-        fontSize: 14,
-        fontWeight: FontWeight.normal,
-        color: Colors.black,
-      ),
-      bodySmall: TextStyle(
-        fontSize: 12,
-        fontWeight: FontWeight.normal,
-        color: Colors.black,
-      ),
-      titleLarge: TextStyle(
-        fontSize: 20,
-        fontWeight: FontWeight.bold,
-        color: Colors.black,
-      ),
-      titleMedium: TextStyle(
-        fontSize: 18,
-        fontWeight: FontWeight.bold,
-        color: Colors.black,
-      ),
-    ),
+    textTheme: appTextTheme,
   );
 
   // tema oscuro
@@ -67,32 +42,6 @@ class AppTheme {
       surface: AppColors.charcoal,
       onSurface: Colors.white,
     ),
-    textTheme: const TextTheme(
-      bodyLarge: TextStyle(
-        fontSize: 16,
-        fontWeight: FontWeight.normal,
-        color: Colors.black,
-      ),
-      bodyMedium: TextStyle(
-        fontSize: 14,
-        fontWeight: FontWeight.normal,
-        color: Colors.black,
-      ),
-      bodySmall: TextStyle(
-        fontSize: 12,
-        fontWeight: FontWeight.normal,
-        color: Colors.black,
-      ),
-      titleLarge: TextStyle(
-        fontSize: 20,
-        fontWeight: FontWeight.bold,
-        color: Colors.black,
-      ),
-      titleMedium: TextStyle(
-        fontSize: 18,
-        fontWeight: FontWeight.bold,
-        color: Colors.black,
-      ),
-    ),
+    textTheme: appTextTheme,
   );
 }
