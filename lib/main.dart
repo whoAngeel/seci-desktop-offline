@@ -14,10 +14,10 @@ void main() async {
     // Elimina las propiedades de tamaño fijo para permitir el modo de pantalla completa
     center: true,
     backgroundColor: Colors.transparent,
-    skipTaskbar: false,
+    // skipTaskbar: false,
     titleBarStyle: TitleBarStyle.normal,
-    windowButtonVisibility: true,
-    title: 'SECI Desktop',
+    windowButtonVisibility: false,
+    title: 'Sistema de Entradas del Centroo de Información [SECI]',
     alwaysOnTop: false,
     fullScreen: true, // Se inicia en pantalla completa
   );
@@ -28,7 +28,7 @@ void main() async {
     await windowManager.setResizable(false); // No redimensionable
     await windowManager.setMinimizable(true);
     await windowManager.setMaximizable(true); // Permitir fullscreen
-    await windowManager.setSize(const Size(1920, 1080)); // Forzar tamaño exacto
+    // await windowManager.setSize(const Size(1920, 1080)); // Forzar tamaño exacto
 
     // Mostrar la ventana
     await windowManager.show();
