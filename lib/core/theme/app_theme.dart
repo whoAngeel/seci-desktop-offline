@@ -54,9 +54,18 @@ class AppTheme {
   static ThemeData darkTheme = ThemeData(
     useMaterial3: true,
     brightness: Brightness.dark,
-    colorScheme: ColorScheme.fromSeed(
-      seedColor: Colors.blue,
+    colorScheme: const ColorScheme(
       brightness: Brightness.dark,
+      primary: AppColors.primary,
+      onPrimary: Colors.white,
+      secondary: AppColors.secondary,
+      onSecondary: Colors.white,
+      error: Colors.red,
+      onError: Colors.white,
+      // background: AppColors.oxfordBlue,
+      // onBackground: Colors.white,
+      surface: AppColors.charcoal,
+      onSurface: Colors.white,
     ),
     textTheme: const TextTheme(
       bodyLarge: TextStyle(

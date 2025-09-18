@@ -12,7 +12,7 @@ class MyApp extends StatelessWidget {
       title: "SECI Desktop",
       theme: AppTheme.lightTheme,
       darkTheme: AppTheme.darkTheme,
-      themeMode: ThemeMode.system,
+      themeMode: ThemeMode.light,
       home: const CountersScreen(),
     );
   }
