@@ -56,6 +56,7 @@ class CounterState {
 class CounterNotifier extends _$CounterNotifier {
   @override
   CounterState build() {
+    _initializerCounters();
     return CounterState(
       counters: [],
       totalCount: 0,
@@ -68,7 +69,18 @@ class CounterNotifier extends _$CounterNotifier {
     try {
       final repository = ref.read(counterRepositoryProvider);
 
-      // await _checkDateConsistency();
+      await _checkDateConsistency();
+
+      // cargar contadores del dia
+      final counters = await repository.getCountersForToday();
+      final total = await repository.getTotalForToday();
+
+      state = state.copyWith(
+        counters: counters,
+        totalCount: total,
+        isLoading: false,
+        currentDate: DateTime.now(),
+      );
     } catch (e) {
       state = state.copyWith(
         error: 'Error al cargar los contadores: $e',
