@@ -1,58 +1,35 @@
 import 'package:flutter/material.dart';
-import 'package:seci_desktop/core/constants.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:intl/intl.dart';
 
-class CountersScreen extends StatelessWidget {
+import 'package:seci_desktop/features/counters/presentation/providers/counter_provider.dart';
+
+class CountersScreen extends ConsumerWidget {
   const CountersScreen({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    final colors = Theme.of(context).colorScheme;
-    // final textTheme = Theme.of(context).textTheme;
-    return Scaffold(
-      appBar: AppBar(
-        title: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-          decoration: BoxDecoration(
-            color: colors.primary.withValues(alpha: 0.1),
-            borderRadius: BorderRadius.circular(8),
-          ),
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              // Icon(Icons.photo_library, color: colors.primary, size: 26),
-              Image.network(seciLogo, width: 26, height: 26),
-              const SizedBox(width: 4),
-              Text(
-                "SECI",
-                style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                  color: colors.primary,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-            ],
-          ),
-        ),
-        backgroundColor: colors.surface,
-        elevation: 3,
-        // foregroundColor: colors.error,
-      ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text(
-              "Bienvenido al SECI Desktop",
-              style: Theme.of(context).textTheme.titleLarge,
-            ),
-            const SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: () {
-                return;
-              },
-              child: const Text("Contadores"),
-            ),
-          ],
-        ),
+  Widget build(BuildContext context, WidgetRef ref) {
+    final counterState = ref.watch(counterProvider);
+    final counterNotifier = ref.read(counterProvider.notifier);
+
+    return const Scaffold(
+      body: Column(
+        children: [
+          // Header
+          // _buildHeader(context, counterState),
+
+          // // Error message si existe
+          // if (counterState.error != null)
+          //   // _buildErrorBanner(context, ref, counterState.error!),
+
+          // // Content
+          // Expanded(
+          //   child: counterState.isLoading
+          //       ? const Center(child: CircularProgressIndicator())
+          //       : _buildCountersGrid(counterState),
+          // ),
+          // Text(DateFormat('dd/MM/YYYY').format(counterState.currentDate)),
+        ],
       ),
     );
   }
