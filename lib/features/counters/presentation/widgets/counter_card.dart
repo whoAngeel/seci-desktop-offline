@@ -52,7 +52,7 @@ class CounterCard extends ConsumerWidget {
                       .read(counterProvider.notifier)
                       .decrementCounter(counter.category, Gender.women),
                 ),
-
+                const SizedBox(height: 8),
                 // cloumna hombres
                 _GenderCounter(
                   label: 'H',
@@ -76,7 +76,7 @@ class CounterCard extends ConsumerWidget {
                 borderRadius: BorderRadius.circular(4),
               ),
               child: Text(
-                '${counter.total}',
+                'Total: ${counter.total}',
                 style: Theme.of(context).textTheme.titleMedium?.copyWith(
                   fontWeight: FontWeight.bold,
                   color: Theme.of(context).colorScheme.onPrimaryContainer,
@@ -107,44 +107,47 @@ class _GenderCounter extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+      padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
+
       child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        // crossAxisAlignment: CrossAxisAlignment.,
-        mainAxisSize: MainAxisSize.max,
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        mainAxisSize: MainAxisSize.min,
+
         children: [
-          // Text(label, style: Theme.of(context).textTheme.labelMedium),
+          // Icono de género
           Icon(
             label == 'M' ? Icons.woman_rounded : Icons.man,
-            size: 32,
+            size: 28,
             color: label == 'H'
                 ? Theme.of(context).colorScheme.primary
                 : Colors.pink,
           ),
-          const SizedBox(height: 4),
+          const SizedBox(width: 16),
+
+          // Botón decrementar
           SizedBox(
-            width: 32,
-            height: 24,
+            width: 28,
+            height: 28,
             child: IconButton(
               onPressed: count > 0 ? onDecrement : null,
-              icon: const Icon(Icons.remove, size: 16),
+              icon: const Icon(Icons.remove, size: 14),
+              padding: EdgeInsets.zero,
               constraints: const BoxConstraints(),
               style: IconButton.styleFrom(
                 backgroundColor: count > 0
                     ? Theme.of(context).colorScheme.errorContainer
-                    : Theme.of(context).colorScheme.primary,
+                    : Theme.of(context).colorScheme.surface,
                 foregroundColor: count > 0
                     ? Theme.of(context).colorScheme.onErrorContainer
-                    : Theme.of(context).colorScheme.onPrimary,
+                    : Theme.of(context).colorScheme.onSurface,
               ),
             ),
           ),
-          const SizedBox(height: 4),
-
-          // condator
+          const SizedBox(width: 8),
+          // Contador
           Container(
-            width: 32,
-            height: 24,
+            width: 28,
+            height: 28,
             alignment: Alignment.center,
             decoration: BoxDecoration(
               border: Border.all(color: Theme.of(context).colorScheme.outline),
@@ -152,20 +155,21 @@ class _GenderCounter extends StatelessWidget {
             ),
             child: Text(
               '$count',
-              style: Theme.of(
-                context,
-              ).textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.bold),
+              style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                fontWeight: FontWeight.bold,
+                fontSize: 12,
+              ),
             ),
           ),
+          const SizedBox(width: 8),
 
-          const SizedBox(height: 4),
-          // boton incrementar
+          // Botón incrementar
           SizedBox(
-            width: 32,
-            height: 24,
+            width: 28,
+            height: 28,
             child: IconButton(
               onPressed: onIncrement,
-              icon: const Icon(Icons.add, size: 16),
+              icon: const Icon(Icons.add, size: 14),
               padding: EdgeInsets.zero,
               constraints: const BoxConstraints(),
               style: IconButton.styleFrom(
