@@ -26,16 +26,20 @@ class CounterCard extends ConsumerWidget {
             // Nombre de la categoria
             Text(
               name,
-              style: Theme.of(
-                context,
-              ).textTheme.titleSmall?.copyWith(fontWeight: FontWeight.bold),
+              style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                fontWeight: FontWeight.bold,
+                fontSize: 20,
+              ),
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: 8),
 
             // contadores M y H
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              mainAxisSize: MainAxisSize.min,
+
+              // mainAxisSize: MainAxisSize.min,
               children: [
                 // columan mujeres,
                 _GenderCounter(
@@ -102,65 +106,78 @@ class _GenderCounter extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      // mainAxisAlignment: MainAxisAlignment.spaceAround,
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Text(label, style: Theme.of(context).textTheme.labelMedium),
-        const SizedBox(height: 4),
-        SizedBox(
-          width: 32,
-          height: 24,
-          child: IconButton(
-            onPressed: count > 0 ? onDecrement : null,
-            icon: const Icon(Icons.remove, size: 16),
-            constraints: const BoxConstraints(),
-            style: IconButton.styleFrom(
-              backgroundColor: count > 0
-                  ? Theme.of(context).colorScheme.errorContainer
-                  : Theme.of(context).colorScheme.primary,
-              foregroundColor: count > 0
-                  ? Theme.of(context).colorScheme.onErrorContainer
-                  : Theme.of(context).colorScheme.onPrimary,
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        // crossAxisAlignment: CrossAxisAlignment.,
+        mainAxisSize: MainAxisSize.max,
+        children: [
+          // Text(label, style: Theme.of(context).textTheme.labelMedium),
+          Icon(
+            label == 'M' ? Icons.woman_rounded : Icons.man,
+            size: 32,
+            color: label == 'H'
+                ? Theme.of(context).colorScheme.primary
+                : Colors.pink,
+          ),
+          const SizedBox(height: 4),
+          SizedBox(
+            width: 32,
+            height: 24,
+            child: IconButton(
+              onPressed: count > 0 ? onDecrement : null,
+              icon: const Icon(Icons.remove, size: 16),
+              constraints: const BoxConstraints(),
+              style: IconButton.styleFrom(
+                backgroundColor: count > 0
+                    ? Theme.of(context).colorScheme.errorContainer
+                    : Theme.of(context).colorScheme.primary,
+                foregroundColor: count > 0
+                    ? Theme.of(context).colorScheme.onErrorContainer
+                    : Theme.of(context).colorScheme.onPrimary,
+              ),
             ),
           ),
-        ),
-        const SizedBox(height: 4),
+          const SizedBox(height: 4),
 
-        // condator
-        Container(
-          width: 32,
-          height: 24,
-          alignment: Alignment.center,
-          decoration: BoxDecoration(
-            border: Border.all(color: Theme.of(context).colorScheme.outline),
-            borderRadius: BorderRadius.circular(4),
-          ),
-          child: Text(
-            '$count',
-            style: Theme.of(
-              context,
-            ).textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.bold),
-          ),
-        ),
-
-        const SizedBox(height: 4),
-        // boton incrementar
-        SizedBox(
-          width: 32,
-          height: 24,
-          child: IconButton(
-            onPressed: () {},
-            icon: const Icon(Icons.add, size: 16),
-            padding: EdgeInsets.zero,
-            constraints: const BoxConstraints(),
-            style: IconButton.styleFrom(
-              backgroundColor: Theme.of(context).colorScheme.primaryContainer,
-              foregroundColor: Theme.of(context).colorScheme.onPrimaryContainer,
+          // condator
+          Container(
+            width: 32,
+            height: 24,
+            alignment: Alignment.center,
+            decoration: BoxDecoration(
+              border: Border.all(color: Theme.of(context).colorScheme.outline),
+              borderRadius: BorderRadius.circular(4),
+            ),
+            child: Text(
+              '$count',
+              style: Theme.of(
+                context,
+              ).textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.bold),
             ),
           ),
-        ),
-      ],
+
+          const SizedBox(height: 4),
+          // boton incrementar
+          SizedBox(
+            width: 32,
+            height: 24,
+            child: IconButton(
+              onPressed: onIncrement,
+              icon: const Icon(Icons.add, size: 16),
+              padding: EdgeInsets.zero,
+              constraints: const BoxConstraints(),
+              style: IconButton.styleFrom(
+                backgroundColor: Theme.of(context).colorScheme.primaryContainer,
+                foregroundColor: Theme.of(
+                  context,
+                ).colorScheme.onPrimaryContainer,
+              ),
+            ),
+          ),
+        ],
+      ),
     );
   }
 }

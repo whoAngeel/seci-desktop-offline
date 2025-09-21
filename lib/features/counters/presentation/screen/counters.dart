@@ -113,11 +113,13 @@ class CountersScreen extends ConsumerWidget {
 
   Widget _buildCountersGrid(CounterState state) {
     return Padding(
-      padding: const EdgeInsets.all(16),
+      // padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.symmetric(horizontal: 64, vertical: 16),
       child: GridView.builder(
         gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
           crossAxisCount: 7,
-          childAspectRatio: 0.8,
+          childAspectRatio: 1.2,
+          // mainAxisExtent: 150,
           crossAxisSpacing: 8,
           mainAxisSpacing: 8,
         ),

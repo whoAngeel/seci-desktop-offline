@@ -58,10 +58,8 @@ class CounterState {
 class Counter extends _$Counter {
   @override
   CounterState build() {
-    // ✅ MEJORADO: Inicialización inmediata con carga de datos por defecto
     _initializeCounters();
 
-    // ✅ Retorna estado inicial con contadores vacíos pero válidos
     return CounterState(
       counters: _createEmptyCounters(),
       totalCount: 0,
@@ -166,6 +164,7 @@ class Counter extends _$Counter {
         0,
         (sum, counter) => sum + counter.total,
       );
+      print('Contador actualizado correctamente');
 
       state = state.copyWith(
         counters: updatedCounters,
@@ -173,6 +172,7 @@ class Counter extends _$Counter {
         error: null, // Limpiar errores en operación exitosa
       );
     } catch (e) {
+      print('Error al actualizar contador: $e');
       state = state.copyWith(error: 'Error al actualizar contador: $e');
     }
   }
