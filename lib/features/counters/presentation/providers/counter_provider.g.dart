@@ -13,8 +13,13 @@ part of 'counter_provider.dart';
 const databaseProvider = DatabaseProvider._();
 
 final class DatabaseProvider
-    extends $FunctionalProvider<AppDatabase, AppDatabase, AppDatabase>
-    with $Provider<AppDatabase> {
+    extends
+        $FunctionalProvider<
+          AsyncValue<AppDatabase>,
+          AppDatabase,
+          FutureOr<AppDatabase>
+        >
+    with $FutureModifier<AppDatabase>, $FutureProvider<AppDatabase> {
   const DatabaseProvider._()
     : super(
         from: null,
@@ -31,31 +36,29 @@ final class DatabaseProvider
 
   @$internal
   @override
-  $ProviderElement<AppDatabase> $createElement($ProviderPointer pointer) =>
-      $ProviderElement(pointer);
+  $FutureProviderElement<AppDatabase> $createElement(
+    $ProviderPointer pointer,
+  ) => $FutureProviderElement(pointer);
 
   @override
-  AppDatabase create(Ref ref) {
+  FutureOr<AppDatabase> create(Ref ref) {
     return database(ref);
-  }
-
-  /// {@macro riverpod.override_with_value}
-  Override overrideWithValue(AppDatabase value) {
-    return $ProviderOverride(
-      origin: this,
-      providerOverride: $SyncValueProvider<AppDatabase>(value),
-    );
   }
 }
 
-String _$databaseHash() => r'b43f5a38382427710fbceefeb419518e859b35ea';
+String _$databaseHash() => r'49ef699ba073e227c7bb93fc5dbfdaf513599130';
 
 @ProviderFor(counterRepository)
 const counterRepositoryProvider = CounterRepositoryProvider._();
 
 final class CounterRepositoryProvider
-    extends $FunctionalProvider<CounterRepo, CounterRepo, CounterRepo>
-    with $Provider<CounterRepo> {
+    extends
+        $FunctionalProvider<
+          AsyncValue<CounterRepo>,
+          CounterRepo,
+          FutureOr<CounterRepo>
+        >
+    with $FutureModifier<CounterRepo>, $FutureProvider<CounterRepo> {
   const CounterRepositoryProvider._()
     : super(
         from: null,
@@ -72,24 +75,17 @@ final class CounterRepositoryProvider
 
   @$internal
   @override
-  $ProviderElement<CounterRepo> $createElement($ProviderPointer pointer) =>
-      $ProviderElement(pointer);
+  $FutureProviderElement<CounterRepo> $createElement(
+    $ProviderPointer pointer,
+  ) => $FutureProviderElement(pointer);
 
   @override
-  CounterRepo create(Ref ref) {
+  FutureOr<CounterRepo> create(Ref ref) {
     return counterRepository(ref);
-  }
-
-  /// {@macro riverpod.override_with_value}
-  Override overrideWithValue(CounterRepo value) {
-    return $ProviderOverride(
-      origin: this,
-      providerOverride: $SyncValueProvider<CounterRepo>(value),
-    );
   }
 }
 
-String _$counterRepositoryHash() => r'f564e9b8317bb5e6444d42de21b148667cb35580';
+String _$counterRepositoryHash() => r'c38a6735fb1438ef13b1b6bfc38907a330ece77a';
 
 @ProviderFor(Counter)
 const counterProvider = CounterProvider._();
@@ -122,7 +118,7 @@ final class CounterProvider extends $NotifierProvider<Counter, CounterState> {
   }
 }
 
-String _$counterHash() => r'eeecf7128fa9052de58d10d5847dae46c42d7151';
+String _$counterHash() => r'ce21e7b7997fc80f98160c97e1f7f774791fddbc';
 
 abstract class _$Counter extends $Notifier<CounterState> {
   CounterState build();

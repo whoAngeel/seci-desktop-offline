@@ -8,16 +8,18 @@ part 'counter_provider.g.dart';
 
 // Provider para la base de datos
 @riverpod
-AppDatabase database(Ref ref) {
-  final db = AppDatabase();
-  ref.onDispose(() => db.close());
+Future<AppDatabase> database(Ref ref) async {
+  print('📚 Provider: Inicializando base de datos...');
+  final db = await AppDatabase.getInstance();
+  // ref.onDispose(() => db.close());
+  print('✅ Provider: Base de datos inicializada');
   return db;
 }
 
 // Provider para el repository
 @riverpod
-CounterRepo counterRepository(Ref ref) {
-  final database = ref.watch(databaseProvider);
+Future<CounterRepo> counterRepository(Ref ref) async {
+  final database = await ref.watch(databaseProvider.future);
   return CounterRepo(database);
 }
 
@@ -68,7 +70,6 @@ class Counter extends _$Counter {
     );
   }
 
-  // ✅ Crear contadores vacíos por defecto para evitar lista vacía
   List<CounterEntity> _createEmptyCounters() {
     final today = DateTime.now();
     final dateOnly = DateTime(today.year, today.month, today.day);
@@ -87,28 +88,25 @@ class Counter extends _$Counter {
 
   Future<void> _initializeCounters() async {
     try {
-      await Future.delayed(
-        const Duration(milliseconds: 100),
-      ); // Dar tiempo a la BD
+      print('🔄 Counter: Esperando inicialización de BD...');
 
-      final repository = ref.read(counterRepositoryProvider);
+      print('🔄 Counter: BD lista, obteniendo repository...');
+      final repository = await ref.read(counterRepositoryProvider.future);
 
-      // Verificar consistencia de fecha
-      await _checkDateConsistency();
-
-      // Cargar contadores del día
+      print('🔄 Counter: Cargando contadores...');
       final counters = await repository.getCountersForToday();
       final total = await repository.getTotalForToday();
 
+      print('✅ Counter: Contadores cargados: ${counters.length}');
       state = state.copyWith(
         counters: counters,
         totalCount: total,
         isLoading: false,
         currentDate: DateTime.now(),
-        error: null, // Limpiar errores previos
+        error: null,
       );
     } catch (e) {
-      // ✅ Mantener contadores vacíos funcionales en caso de error
+      print('❌ Counter: Error en inicialización: $e');
       state = state.copyWith(
         counters: _createEmptyCounters(),
         isLoading: false,
@@ -131,7 +129,10 @@ class Counter extends _$Counter {
     int increment,
   ) async {
     try {
-      final repository = ref.read(counterRepositoryProvider);
+      print('🔄 Counter: Actualizando $category ${gender.name} +$increment');
+
+      // Obtener repository
+      final repository = await ref.read(counterRepositoryProvider.future);
 
       // Actualizar en base de datos
       await repository.updateCounter(
@@ -164,53 +165,17 @@ class Counter extends _$Counter {
         0,
         (sum, counter) => sum + counter.total,
       );
-      print('Contador actualizado correctamente');
 
       state = state.copyWith(
         counters: updatedCounters,
         totalCount: newTotal,
-        error: null, // Limpiar errores en operación exitosa
+        error: null,
       );
+
+      print('✅ Counter: Actualización completada');
     } catch (e) {
-      print('Error al actualizar contador: $e');
+      print('❌ Counter: Error actualizando: $e');
       state = state.copyWith(error: 'Error al actualizar contador: $e');
-    }
-  }
-
-  Future<void> _checkDateConsistency() async {
-    try {
-      final repository = ref.read(counterRepositoryProvider);
-
-      // Solo verificar si ya hay datos en la BD
-      final hasData = await repository.hasDataForToday();
-      if (!hasData) {
-        return; // No verificar fecha si no hay datos previos
-      }
-
-      final lastDate = await repository.getLastRegisteredDate();
-      final currentDate = DateTime.now();
-
-      if (lastDate != null) {
-        final lastDateOnly = DateTime(
-          lastDate.year,
-          lastDate.month,
-          lastDate.day,
-        );
-        final currentDateOnly = DateTime(
-          currentDate.year,
-          currentDate.month,
-          currentDate.day,
-        );
-
-        if (currentDateOnly.isBefore(lastDateOnly)) {
-          state = state.copyWith(
-            error: 'Advertencia: La fecha del sistema parece haber retrocedido',
-          );
-        }
-      }
-    } catch (e) {
-      // No mostrar error de consistencia de fecha
-      print('Warning: Error checking date consistency: $e');
     }
   }
 
@@ -218,7 +183,6 @@ class Counter extends _$Counter {
     state = state.copyWith(error: null);
   }
 
-  // ✅ Método para refrescar datos manualmente
   Future<void> refresh() async {
     state = state.copyWith(isLoading: true);
     await _initializeCounters();

@@ -1,10 +1,7 @@
+import 'dart:io';
 import 'package:drift/drift.dart';
 import 'package:drift/native.dart';
-import 'package:path_provider/path_provider.dart';
 import 'package:path/path.dart' as path;
-import 'dart:io';
-
-import 'package:seci_desktop/core/constants.dart';
 
 part 'database.g.dart';
 
@@ -18,7 +15,6 @@ class DailyCounts extends Table {
   DateTimeColumn get createdAt => dateTime().withDefault(currentDateAndTime)();
   DateTimeColumn get updatedAt => dateTime().withDefault(currentDateAndTime)();
 
-  // Índice único por fecha + categoría (un registro por día por categoría)
   @override
   List<Set<Column>> get uniqueKeys => [
     {date, category},
@@ -27,7 +23,32 @@ class DailyCounts extends Table {
 
 @DriftDatabase(tables: [DailyCounts])
 class AppDatabase extends _$AppDatabase {
-  AppDatabase() : super(_openConnection());
+  static AppDatabase? _instance;
+  static bool _isInitialized = false;
+
+  AppDatabase._internal() : super(_createConnection());
+
+  static Future<AppDatabase> getInstance() async {
+    if (_instance == null || !_isInitialized) {
+      print('📚 Database: Creando nueva instancia...');
+      _instance = AppDatabase._internal();
+
+      // FORZAR inicialización completa
+      print('📚 Database: Forzando inicialización...');
+      await _instance!._ensureInitialized();
+      _isInitialized = true;
+      print('✅ Database: Inicialización completa');
+    }
+    return _instance!;
+  }
+
+  // Constructor factory que devuelve la instancia
+  factory AppDatabase() {
+    if (_instance == null || !_isInitialized) {
+      throw StateError('Database no inicializada. Usa getInstance() primero.');
+    }
+    return _instance!;
+  }
 
   @override
   int get schemaVersion => 1;
@@ -36,18 +57,30 @@ class AppDatabase extends _$AppDatabase {
   MigrationStrategy get migration {
     return MigrationStrategy(
       onCreate: (Migrator m) async {
+        print('📚 Database: Ejecutando onCreate...');
         await m.createAll();
-      },
-      onUpgrade: (Migrator m, int from, int to) async {
-        // Futuras migraciones aquí
+        print('✅ Database: onCreate completado');
       },
     );
   }
 
+  // Método para forzar inicialización
+  Future<void> _ensureInitialized() async {
+    try {
+      print('📚 Database: Verificando inicialización...');
+      // Ejecutar una consulta simple para forzar inicialización
+      await customSelect('SELECT 1').getSingleOrNull();
+      print('✅ Database: Verificación exitosa');
+    } catch (e) {
+      print('❌ Database: Error en inicialización: $e');
+      rethrow;
+    }
+  }
+
   // Métodos básicos para el contador
-  Future<List<DailyCount>> getCountersForDate(DateTime date) {
+  Future<List<DailyCount>> getCountersForDate(DateTime date) async {
     final dateOnly = DateTime(date.year, date.month, date.day);
-    return (select(
+    return await (select(
       dailyCounts,
     )..where((tbl) => tbl.date.equals(dateOnly))).get();
   }
@@ -60,15 +93,36 @@ class AppDatabase extends _$AppDatabase {
   }) async {
     final dateOnly = DateTime(date.year, date.month, date.day);
 
-    await into(dailyCounts).insertOnConflictUpdate(
-      DailyCountsCompanion.insert(
-        date: dateOnly,
-        category: category,
-        menCount: Value(menCount),
-        womenCount: Value(womenCount),
-        updatedAt: Value(DateTime.now()),
-      ),
-    );
+    // Verificar si existe
+    final existing =
+        await (select(dailyCounts)..where(
+              (tbl) =>
+                  tbl.date.equals(dateOnly) & tbl.category.equals(category),
+            ))
+            .getSingleOrNull();
+
+    if (existing != null) {
+      // Actualizar
+      await (update(
+        dailyCounts,
+      )..where((tbl) => tbl.id.equals(existing.id))).write(
+        DailyCountsCompanion(
+          menCount: Value(menCount),
+          womenCount: Value(womenCount),
+          updatedAt: Value(DateTime.now()),
+        ),
+      );
+    } else {
+      // Insertar nuevo
+      await into(dailyCounts).insert(
+        DailyCountsCompanion.insert(
+          date: dateOnly,
+          category: category,
+          menCount: Value(menCount),
+          womenCount: Value(womenCount),
+        ),
+      );
+    }
   }
 
   Future<int> getTotalForDate(DateTime date) async {
@@ -94,22 +148,18 @@ class AppDatabase extends _$AppDatabase {
   }
 }
 
-LazyDatabase _openConnection() {
-  return LazyDatabase(() async {
-    try {
-      final dbFolder = await getApplicationDocumentsDirectory();
-      final file = File(path.join(dbFolder.path, 'biblioteca_counter.db'));
+// Conexión directa y simple
+QueryExecutor _createConnection() {
+  // Usar directorio actual/data
+  final dbPath = path.join(Directory.current.path, 'data', 'seci_counter.db');
+  final file = File(dbPath);
 
-      // crear directorio si no existe
-      if (!await dbFolder.exists()) {
-        await dbFolder.create(recursive: true);
-      }
+  // Crear directorio si no existe
+  final dataDir = Directory(path.dirname(dbPath));
+  if (!dataDir.existsSync()) {
+    dataDir.createSync(recursive: true);
+  }
 
-      return NativeDatabase.createInBackground(file);
-    } catch (e) {
-      final tempDir = Directory.systemTemp;
-      final file = File(path.join(tempDir.path, 'seci_counter.db'));
-      return NativeDatabase.createInBackground(file);
-    }
-  });
+  print('📚 Database: Conexión directa a: $dbPath');
+  return NativeDatabase(file);
 }
