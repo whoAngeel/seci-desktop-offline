@@ -4,8 +4,11 @@ import 'package:path_provider/path_provider.dart';
 import 'package:path/path.dart' as path;
 import 'dart:io';
 
+import 'package:seci_desktop/core/constants.dart';
+
 part 'database.g.dart';
 
+// Tabla de contadores diarios
 class DailyCounts extends Table {
   IntColumn get id => integer().autoIncrement()();
   DateTimeColumn get date => dateTime()();
@@ -15,11 +18,9 @@ class DailyCounts extends Table {
   DateTimeColumn get createdAt => dateTime().withDefault(currentDateAndTime)();
   DateTimeColumn get updatedAt => dateTime().withDefault(currentDateAndTime)();
 
+  // Índice único por fecha + categoría (un registro por día por categoría)
   @override
-  Set<Column<Object>>? get primaryKey => {id};
-
-  @override
-  List<Set<Column<Object>>>? get uniqueKeys => [
+  List<Set<Column>> get uniqueKeys => [
     {date, category},
   ];
 }
@@ -95,8 +96,20 @@ class AppDatabase extends _$AppDatabase {
 
 LazyDatabase _openConnection() {
   return LazyDatabase(() async {
-    final dbFolder = await getApplicationDocumentsDirectory();
-    final file = File(path.join(dbFolder.path, 'biblioteca_counter.db'));
-    return NativeDatabase.createInBackground(file);
+    try {
+      final dbFolder = await getApplicationDocumentsDirectory();
+      final file = File(path.join(dbFolder.path, 'biblioteca_counter.db'));
+
+      // crear directorio si no existe
+      if (!await dbFolder.exists()) {
+        await dbFolder.create(recursive: true);
+      }
+
+      return NativeDatabase.createInBackground(file);
+    } catch (e) {
+      final tempDir = Directory.systemTemp;
+      final file = File(path.join(tempDir.path, 'seci_counter.db'));
+      return NativeDatabase.createInBackground(file);
+    }
   });
 }

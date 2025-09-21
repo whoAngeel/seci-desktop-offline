@@ -91,12 +91,11 @@ final class CounterRepositoryProvider
 
 String _$counterRepositoryHash() => r'f564e9b8317bb5e6444d42de21b148667cb35580';
 
-@ProviderFor(CounterNotifier)
-const counterProvider = CounterNotifierProvider._();
+@ProviderFor(Counter)
+const counterProvider = CounterProvider._();
 
-final class CounterNotifierProvider
-    extends $NotifierProvider<CounterNotifier, CounterState> {
-  const CounterNotifierProvider._()
+final class CounterProvider extends $NotifierProvider<Counter, CounterState> {
+  const CounterProvider._()
     : super(
         from: null,
         argument: null,
@@ -108,11 +107,11 @@ final class CounterNotifierProvider
       );
 
   @override
-  String debugGetCreateSourceHash() => _$counterNotifierHash();
+  String debugGetCreateSourceHash() => _$counterHash();
 
   @$internal
   @override
-  CounterNotifier create() => CounterNotifier();
+  Counter create() => Counter();
 
   /// {@macro riverpod.override_with_value}
   Override overrideWithValue(CounterState value) {
@@ -123,9 +122,9 @@ final class CounterNotifierProvider
   }
 }
 
-String _$counterNotifierHash() => r'a84c303c152b4d7250228f7fa9e8d8871b4182c5';
+String _$counterHash() => r'eeecf7128fa9052de58d10d5847dae46c42d7151';
 
-abstract class _$CounterNotifier extends $Notifier<CounterState> {
+abstract class _$Counter extends $Notifier<CounterState> {
   CounterState build();
   @$mustCallSuper
   @override
