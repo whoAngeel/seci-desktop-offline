@@ -69,8 +69,8 @@ class CounterCard extends ConsumerWidget {
             const SizedBox(height: 8),
             // TOTAL
             Container(
-              width: double.infinity,
-              padding: const EdgeInsets.symmetric(vertical: 4),
+              // width: ,
+              padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 24),
               decoration: BoxDecoration(
                 color: Theme.of(context).colorScheme.primaryContainer,
                 borderRadius: BorderRadius.circular(4),

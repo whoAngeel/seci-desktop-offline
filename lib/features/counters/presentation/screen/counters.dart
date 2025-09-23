@@ -19,17 +19,63 @@ class CountersScreen extends ConsumerWidget {
           _buildSideBar(context, ref),
           Expanded(
             child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                if (counterState.error != null)
-                  _buildErrorBanner(context, ref, counterState.error!),
+                // Header con título
+                Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 28),
+                  child: Text(
+                    "Sistema de Entradas del Centro de Información",
+                    style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 38,
+                      color: Theme.of(context).colorScheme.primary,
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                ),
 
+                // Banner de error si existe
+                if (counterState.error != null)
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 32),
+                    child: _buildErrorBanner(context, ref, counterState.error!),
+                  ),
+
+                // Contenido principal centrado
                 Expanded(
-                  child: counterState.isLoading
-                      ? const Center(child: CircularProgressIndicator())
-                      : _buildCountersGrid(counterState),
+                  child: Center(
+                    child: counterState.isLoading
+                        ? const CircularProgressIndicator()
+                        : _buildCountersGrid(counterState),
+                  ),
+                ),
+
+                // Footer con fecha
+                Padding(
+                  padding: const EdgeInsets.all(24),
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 16,
+                      vertical: 8,
+                    ),
+                    decoration: BoxDecoration(
+                      color: Theme.of(context).colorScheme.surfaceContainer,
+                      borderRadius: BorderRadius.circular(8),
+                      border: Border.all(
+                        color: Theme.of(
+                          context,
+                        ).colorScheme.outline.withValues(alpha: 0.2),
+                      ),
+                    ),
+                    child: Text(
+                      "Fecha actual: ${DateFormat('dd/MM/yyyy').format(counterState.currentDate)}",
+                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                        fontWeight: FontWeight.w500,
+                        fontSize: 48,
+                      ),
+                    ),
+                  ),
                 ),
               ],
             ),
@@ -236,32 +282,24 @@ class CountersScreen extends ConsumerWidget {
   }
 
   Widget _buildCountersGrid(CounterState state) {
-    return Center(
-      // padding: const EdgeInsets.all(16),
-      // child: ConstrainedBox(
-      // constraints: const BoxConstraints(maxWidth: 1000, maxHeight: 600),
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 64, vertical: 16),
-        child: GridView.builder(
-          shrinkWrap: true,
-          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: 5,
-            childAspectRatio: 1.5,
-            // mainAxisExtent: 150,
-            crossAxisSpacing: 16,
-            mainAxisSpacing: 16,
-            // mainAxisExtent: ,
-          ),
-          itemCount: state.counters.length + 1,
-          itemBuilder: (context, index) {
-            if (index == state.counters.length) {
-              return SystemInfoCard();
-            }
-            return CounterCard(counter: state.counters[index]);
-          },
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
+      child: GridView.builder(
+        shrinkWrap: true,
+        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount: 5,
+          childAspectRatio: 1.4,
+          crossAxisSpacing: 20,
+          mainAxisSpacing: 20,
         ),
+        itemCount: state.counters.length + 1,
+        itemBuilder: (context, index) {
+          if (index == state.counters.length) {
+            return SystemInfoCard();
+          }
+          return CounterCard(counter: state.counters[index]);
+        },
       ),
-      // ),
     );
   }
 }
