@@ -1,5 +1,3 @@
-import 'dart:nativewrappers/_internal/vm/lib/ffi_allocation_patch.dart';
-
 import 'package:seci_desktop/core/constants.dart';
 import 'package:seci_desktop/core/database/database.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
