@@ -4,6 +4,7 @@ import 'package:intl/intl.dart';
 
 import 'package:seci_desktop/features/counters/presentation/providers/counter_provider.dart';
 import 'package:seci_desktop/features/counters/presentation/widgets/counter_card.dart';
+import 'package:seci_desktop/features/counters/presentation/widgets/system_info_card.dart';
 
 class CountersScreen extends ConsumerWidget {
   const CountersScreen({super.key});
@@ -16,7 +17,7 @@ class CountersScreen extends ConsumerWidget {
       body: Column(
         children: [
           // Header
-          _buildHeader(context, counterState),
+          // _buildHeader(context, counterState),
 
           // // Error message si existe
           if (counterState.error != null)
@@ -25,6 +26,7 @@ class CountersScreen extends ConsumerWidget {
 
           // // Content
           Expanded(
+            // flex: 15
             child: counterState.isLoading
                 ? const Center(child: CircularProgressIndicator())
                 : _buildCountersGrid(counterState),
@@ -114,17 +116,21 @@ class CountersScreen extends ConsumerWidget {
   Widget _buildCountersGrid(CounterState state) {
     return Padding(
       // padding: const EdgeInsets.all(16),
-      padding: const EdgeInsets.symmetric(horizontal: 64, vertical: 16),
+      padding: const EdgeInsets.symmetric(horizontal: 148, vertical: 32),
       child: GridView.builder(
         gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: 7,
-          childAspectRatio: 1.2,
+          crossAxisCount: 5,
+          childAspectRatio: 1.5,
           // mainAxisExtent: 150,
           crossAxisSpacing: 8,
           mainAxisSpacing: 8,
+          // mainAxisExtent: ,
         ),
-        itemCount: state.counters.length,
+        itemCount: state.counters.length + 1,
         itemBuilder: (context, index) {
+          if (index == state.counters.length) {
+            return SystemInfoCard();
+          }
           return CounterCard(counter: state.counters[index]);
         },
       ),

@@ -11,8 +11,8 @@ class CounterCard extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final String shortName =
-        Categories.shortNames[counter.category] ?? counter.category;
+    // final String shortName =
+    //     Categories.shortNames[counter.category] ?? counter.category;
     final String name = Categories.all
         .where((element) => element == counter.category)
         .first;
@@ -28,7 +28,7 @@ class CounterCard extends ConsumerWidget {
               name,
               style: Theme.of(context).textTheme.titleSmall?.copyWith(
                 fontWeight: FontWeight.bold,
-                fontSize: 20,
+                fontSize: 24,
               ),
               textAlign: TextAlign.center,
             ),
@@ -115,22 +115,25 @@ class _GenderCounter extends StatelessWidget {
 
         children: [
           // Icono de género
-          Icon(
-            label == 'M' ? Icons.woman_rounded : Icons.man,
-            size: 28,
-            color: label == 'H'
-                ? Theme.of(context).colorScheme.primary
-                : Colors.pink,
+          Tooltip(
+            message: label == 'M' ? 'Mujeres' : 'Hombres',
+            child: Icon(
+              label == 'M' ? Icons.woman_rounded : Icons.man,
+              size: 40,
+              color: label == 'H'
+                  ? Theme.of(context).colorScheme.primary
+                  : Colors.pink,
+            ),
           ),
           const SizedBox(width: 16),
 
           // Botón decrementar
           SizedBox(
-            width: 28,
-            height: 28,
+            width: 36,
+            height: 36,
             child: IconButton(
               onPressed: count > 0 ? onDecrement : null,
-              icon: const Icon(Icons.remove, size: 14),
+              icon: const Icon(Icons.remove, size: 20),
               padding: EdgeInsets.zero,
               constraints: const BoxConstraints(),
               style: IconButton.styleFrom(
@@ -146,8 +149,8 @@ class _GenderCounter extends StatelessWidget {
           const SizedBox(width: 8),
           // Contador
           Container(
-            width: 28,
-            height: 28,
+            width: 36,
+            height: 36,
             alignment: Alignment.center,
             decoration: BoxDecoration(
               border: Border.all(color: Theme.of(context).colorScheme.outline),
@@ -157,7 +160,7 @@ class _GenderCounter extends StatelessWidget {
               '$count',
               style: Theme.of(context).textTheme.bodySmall?.copyWith(
                 fontWeight: FontWeight.bold,
-                fontSize: 12,
+                fontSize: 14,
               ),
             ),
           ),
@@ -165,11 +168,11 @@ class _GenderCounter extends StatelessWidget {
 
           // Botón incrementar
           SizedBox(
-            width: 28,
-            height: 28,
+            width: 36,
+            height: 36,
             child: IconButton(
               onPressed: onIncrement,
-              icon: const Icon(Icons.add, size: 14),
+              icon: const Icon(Icons.add, size: 20),
               padding: EdgeInsets.zero,
               constraints: const BoxConstraints(),
               style: IconButton.styleFrom(
