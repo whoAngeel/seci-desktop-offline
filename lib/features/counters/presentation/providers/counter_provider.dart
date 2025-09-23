@@ -1,9 +1,11 @@
+import 'dart:nativewrappers/_internal/vm/lib/ffi_allocation_patch.dart';
+
 import 'package:seci_desktop/core/constants.dart';
 import 'package:seci_desktop/core/database/database.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:seci_desktop/features/counters/data/repository/counter_repo.dart';
 import 'package:seci_desktop/features/counters/domain/entities/counter_entity.dart';
-
+import 'dart:async';
 part 'counter_provider.g.dart';
 
 // Provider para la base de datos
@@ -58,9 +60,16 @@ class CounterState {
 
 @riverpod
 class Counter extends _$Counter {
+  Timer? _dayChangeTimer;
   @override
   CounterState build() {
     _initializeCounters();
+    _startDayChangeDetection();
+
+    // limpiar timer cuando se destruya el provider
+    ref.onDispose(() {
+      _dayChangeTimer?.cancel();
+    });
 
     return CounterState(
       counters: _createEmptyCounters(),
@@ -68,6 +77,28 @@ class Counter extends _$Counter {
       isLoading: true,
       currentDate: DateTime.now(),
     );
+  }
+
+  void _startDayChangeDetection() {
+    _dayChangeTimer = Timer.periodic(const Duration(minutes: 1), (timer) {
+      _checkForDayChange();
+    });
+  }
+
+  void _checkForDayChange() {
+    final now = DateTime.now();
+    final currentDate = DateTime(now.year, now.month, now.day);
+    final stateDate = DateTime(
+      state.currentDate.year,
+      state.currentDate.month,
+      state.currentDate.day,
+    );
+
+    // si la fecha cambio recargar contadores
+    if (!currentDate.isAtSameMomentAs(stateDate)) {
+      print('🔄 Counter: Fecha cambio, recargando contadores...');
+      _initializeCounters();
+    }
   }
 
   List<CounterEntity> _createEmptyCounters() {
