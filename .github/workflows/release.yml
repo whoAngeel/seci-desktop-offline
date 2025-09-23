@@ -1,9 +1,9 @@
 name: Build and Release SECI app
 
-on: 
-  push: 
-    tags: 
-      - 'v*'
+on:
+  push:
+    tags:
+      - "v*"
 
 jobs:
   build:
@@ -11,19 +11,19 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
-- name: Setup Flutter
-  uses: subosito/flutter-action@v2
-  with:
-    channel: 'stable'
-- name: Get dependencies
-  run: flutter pub get
-- name: Build Windows release
-  run: flutter build windows --release
-- name: Create github Release
-  id: create_release
-  uses: softprops/action-gh-release@v1
-  with:
-    files: |
-      build/windows/x64/runner/Release/* 
-  env:
-    GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: "stable"
+      - name: Get dependencies
+        run: flutter pub get
+      - name: Build Windows release
+        run: flutter build windows --release
+      - name: Create github Release
+        id: create_release
+        uses: softprops/action-gh-release@v1
+        with:
+          files: |
+            build/windows/x64/runner/Release/*
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
