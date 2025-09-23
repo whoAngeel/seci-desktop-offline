@@ -24,7 +24,8 @@ jobs:
 
       # Step to create the MSIX installer
       - name: Create MSIX installer
-        run: flutter pub run msix:create
+        # run: flutter pub run msix:create
+        run: flutter pub run msix:create --auto-accept
 
       # Step to create the GitHub Release
       - name: Create github Release
