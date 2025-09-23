@@ -68,11 +68,29 @@ class CountersScreen extends ConsumerWidget {
                         ).colorScheme.outline.withValues(alpha: 0.2),
                       ),
                     ),
-                    child: Text(
-                      "Fecha actual: ${DateFormat('dd/MM/yyyy').format(counterState.currentDate)}",
-                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                        fontWeight: FontWeight.w500,
-                        fontSize: 48,
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 16),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        spacing: 16,
+                        children: [
+                          Icon(
+                            Icons.calendar_today,
+                            size: 48,
+                            color: Theme.of(context).colorScheme.primary,
+                          ),
+                          Text(
+                            "Fecha actual: ${DateFormat('dd/MM/yyyy').format(counterState.currentDate)}",
+                            style: Theme.of(context).textTheme.bodyMedium
+                                ?.copyWith(
+                                  fontWeight: FontWeight.w500,
+                                  fontSize: 48,
+                                  color: Theme.of(context).colorScheme.primary,
+                                ),
+                          ),
+                        ],
                       ),
                     ),
                   ),
