@@ -37,6 +37,7 @@ dev_dependencies:
   custom_lint: ^0.8.0
   riverpod_lint: ^3.0.0
   drift_dev: ^2.28.2
+  msix: ^3.16.12
 
 flutter:
   uses-material-design: true
@@ -70,3 +71,11 @@ flutter:
         - asset: assets/fonts/Lato-BlackItalic.ttf
           weight: 900
           style: italic
+
+msix_config:
+  display_name: "SECI Desktop"
+  publisher_display_name: "Angel Jesus Zorrilla Cuevas"
+  identity_name: "seci.windows"
+  msix_version: "1.0.0.0"
+  publisher: "CN=Angel Jesus Zorrilla Cuevas"
+  logo_path: "assets/images/ito_logo.png"
