@@ -1,14 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:seci_desktop/app/router.dart';
 import 'package:seci_desktop/core/theme/app_theme.dart';
-import 'package:seci_desktop/features/counters/presentation/screen/counters.dart';
-import 'package:seci_desktop/main.dart';
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return MaterialApp.router(
       debugShowCheckedModeBanner: false,
       title: "SECI Desktop",
       theme: ThemeData(
@@ -24,8 +23,9 @@ class MyApp extends StatelessWidget {
       ),
       darkTheme: AppTheme.darkTheme,
       themeMode: ThemeMode.light,
-      navigatorKey: navigatorKey,
-      home: const CountersScreen(),
+      routerConfig: appRouter,
+
+      // home: const CountersScreen(),
     );
   }
 }

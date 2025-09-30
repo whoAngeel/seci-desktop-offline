@@ -3,19 +3,15 @@ import 'package:seci_desktop/shared/widgets/sidebar.dart';
 
 class MainLayout extends StatelessWidget {
   final Widget child;
-  final String currentRoute;
 
-  const MainLayout({
-    super.key,
-    required this.child,
-    required this.currentRoute,
-  });
+  const MainLayout({super.key, required this.child});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Row(
         children: [
-          Sidebar(currentRoute: currentRoute),
+          const Sidebar(),
           Expanded(child: child),
         ],
       ),

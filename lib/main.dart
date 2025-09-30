@@ -95,25 +95,33 @@ class _WindowListener extends WindowListener {
   @override
   void onWindowClose() async {
     final context = navigatorKey.currentContext;
-    if (context == null) return;
-    bool shouldClose = await showDialog(
+    if (context == null) {
+      await windowManager.destroy();
+      return;
+    }
+    ;
+    final bool shouldClose = await showDialog(
       context: context,
+      barrierDismissible: false, // no permitir cerrar tocando fuera
       builder: (context) => AlertDialog(
-        title: Text('¿Cerrar aplicación?'),
+        title: const Text('¿Cerrar aplicación?'),
+        content: const Text(
+          '¿Estás seguro de que quieres cerrar la aplicación?',
+        ),
         actions: [
           TextButton(
-            onPressed: () => Navigator.pop(context, false),
-            child: Text('Cancelar'),
+            onPressed: () => Navigator.of(context).pop(false),
+            child: const Text('Cancelar'),
           ),
           TextButton(
-            onPressed: () => Navigator.pop(context, true),
-            child: Text('Cerrar'),
+            onPressed: () => Navigator.of(context).pop(true),
+            child: const Text('Cerrar'),
           ),
         ],
       ),
     );
 
-    if (shouldClose) {
+    if (shouldClose == true) {
       await windowManager.destroy();
     }
   }
