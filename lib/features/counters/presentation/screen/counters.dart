@@ -5,7 +5,7 @@ import 'package:intl/intl.dart';
 import 'package:seci_desktop/features/counters/presentation/providers/counter_provider.dart';
 import 'package:seci_desktop/features/counters/presentation/widgets/counter_card.dart';
 import 'package:seci_desktop/features/counters/presentation/widgets/system_info_card.dart';
-import 'package:seci_desktop/shared/widget/sidebar.dart';
+import 'package:seci_desktop/shared/widgets/sidebar.dart';
 
 class CountersScreen extends ConsumerWidget {
   const CountersScreen({super.key});

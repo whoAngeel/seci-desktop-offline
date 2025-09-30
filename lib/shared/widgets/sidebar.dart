@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:seci_desktop/app/router.dart';
 
 class Sidebar extends ConsumerWidget {
-  const Sidebar({super.key});
+  final String currentRoute;
+
+  const Sidebar({super.key, required this.currentRoute});
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return Container(
@@ -52,40 +55,26 @@ class Sidebar extends ConsumerWidget {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 spacing: 16,
                 children: [
-                  // Text(
-                  //   'Activo',
-                  //   style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                  //     fontWeight: FontWeight.bold,
-                  //     color: Theme.of(context).colorScheme.primary,
-                  //   ),
-                  // ),
-                  // FloatingActionButton(onPressed: () {}),
-                  IconButton(
-                    onPressed: () {},
-                    icon: Icon(
-                      Icons.table_chart,
-                      color: Theme.of(context).colorScheme.primary,
-                    ),
-                    tooltip: 'Datos de hoy',
-                    alignment: Alignment.center,
+                  _SidebarButton(
+                    icon: Icons.table_chart,
+                    tooltip: 'Contadores',
+                    isActive: currentRoute == AppRoutes.counters,
+                    onPressed: () =>
+                        AppRoutes.navigateTo(context, AppRoutes.counters),
                   ),
-                  IconButton(
-                    onPressed: () {},
-                    icon: Icon(
-                      Icons.calendar_month,
-                      color: Theme.of(context).colorScheme.primary,
-                    ),
-                    tooltip: "Ver Calendario",
-                    alignment: Alignment.center,
+                  _SidebarButton(
+                    icon: Icons.calendar_month,
+                    tooltip: 'Calendario',
+                    isActive: currentRoute == AppRoutes.calendar,
+                    onPressed: () =>
+                        AppRoutes.navigateTo(context, AppRoutes.calendar),
                   ),
-                  IconButton(
-                    onPressed: () {},
-                    icon: Icon(
-                      Icons.backup_table_sharp,
-                      color: Theme.of(context).colorScheme.primary,
-                    ),
-                    tooltip: "Ver todos los datos",
-                    alignment: Alignment.center,
+                  _SidebarButton(
+                    icon: Icons.history,
+                    tooltip: 'Historial',
+                    isActive: currentRoute == AppRoutes.history,
+                    onPressed: () =>
+                        AppRoutes.navigateTo(context, AppRoutes.history),
                   ),
                 ],
               ),
@@ -119,6 +108,44 @@ class Sidebar extends ConsumerWidget {
             ),
           ),
         ],
+      ),
+    );
+  }
+}
+
+class _SidebarButton extends StatelessWidget {
+  final IconData icon;
+  final String tooltip;
+  final bool isActive;
+  final VoidCallback onPressed;
+
+  const _SidebarButton({
+    required this.icon,
+    required this.tooltip,
+    required this.isActive,
+    required this.onPressed,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      decoration: BoxDecoration(
+        color: isActive
+            ? Theme.of(context).colorScheme.primaryContainer
+            : Colors.transparent,
+        borderRadius: BorderRadius.circular(8),
+      ),
+      child: IconButton(
+        onPressed: onPressed,
+        icon: Icon(
+          icon,
+          color: isActive
+              ? Theme.of(context).colorScheme.primary
+              : Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.6),
+          size: isActive ? 28 : 24,
+        ),
+        tooltip: tooltip,
+        alignment: Alignment.center,
       ),
     );
   }
