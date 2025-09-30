@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:seci_desktop/core/theme/app_theme.dart';
 import 'package:seci_desktop/features/counters/presentation/screen/counters.dart';
+import 'package:seci_desktop/main.dart';
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
@@ -23,7 +24,7 @@ class MyApp extends StatelessWidget {
       ),
       darkTheme: AppTheme.darkTheme,
       themeMode: ThemeMode.light,
-
+      navigatorKey: navigatorKey,
       home: const CountersScreen(),
     );
   }

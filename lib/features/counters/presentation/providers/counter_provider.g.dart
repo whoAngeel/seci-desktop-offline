@@ -118,7 +118,7 @@ final class CounterProvider extends $NotifierProvider<Counter, CounterState> {
   }
 }
 
-String _$counterHash() => r'ce21e7b7997fc80f98160c97e1f7f774791fddbc';
+String _$counterHash() => r'1c1c7cc2d840e74c10e0f779cdb1e6ead37000d5';
 
 abstract class _$Counter extends $Notifier<CounterState> {
   CounterState build();

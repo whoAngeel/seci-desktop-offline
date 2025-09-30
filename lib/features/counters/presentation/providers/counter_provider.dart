@@ -1,5 +1,7 @@
+import 'package:flutter/material.dart';
 import 'package:seci_desktop/core/constants.dart';
 import 'package:seci_desktop/core/database/database.dart';
+import 'package:seci_desktop/core/utils/date_utils.dart' as date_utils;
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:seci_desktop/features/counters/data/repository/counter_repo.dart';
 import 'package:seci_desktop/features/counters/domain/entities/counter_entity.dart';
@@ -61,6 +63,8 @@ class Counter extends _$Counter {
   Timer? _dayChangeTimer;
   @override
   CounterState build() {
+    // Verificar cambio de dia al iniciar la app
+    _checkForDayChangeOnInit();
     _initializeCounters();
     _startDayChangeDetection();
 
@@ -85,16 +89,23 @@ class Counter extends _$Counter {
 
   void _checkForDayChange() {
     final now = DateTime.now();
-    final currentDate = DateTime(now.year, now.month, now.day);
-    final stateDate = DateTime(
-      state.currentDate.year,
-      state.currentDate.month,
-      state.currentDate.day,
-    );
+    final currentDate = date_utils.DateUtils.dateOnly(now);
+    final stateDate = date_utils.DateUtils.dateOnly(state.currentDate);
 
-    // si la fecha cambio recargar contadores
-    if (!currentDate.isAtSameMomentAs(stateDate)) {
-      print('🔄 Counter: Fecha cambio, recargando contadores...');
+    // Si la fecha cambió, recargar contadores
+    if (!date_utils.DateUtils.isSameDay(currentDate, stateDate)) {
+      print('');
+      print('🔄 Counter: ═══════════════════════════════════════');
+      print('🔄 Counter: CAMBIO DE DÍA DETECTADO');
+      print(
+        '📅 Counter: Fecha anterior: ${date_utils.DateUtils.formatDate(stateDate)}',
+      );
+      print(
+        '📅 Counter: Fecha nueva: ${date_utils.DateUtils.formatDate(currentDate)}',
+      );
+      print('🔄 Counter: ═══════════════════════════════════════');
+      print('');
+
       _initializeCounters();
     }
   }
@@ -215,5 +226,49 @@ class Counter extends _$Counter {
   Future<void> refresh() async {
     state = state.copyWith(isLoading: true);
     await _initializeCounters();
+  }
+
+  Future<void> _checkForDayChangeOnInit() async {
+    try {
+      print('Counter: verificando cambio de dia al iniciar...');
+      final repository = await ref.read(counterRepositoryProvider.future);
+      final lastDate = await repository.getLastRegisteredDate();
+      final today = date_utils.DateUtils.dateOnly(DateTime.now());
+
+      if (lastDate == null) {
+        print('Primera ejecucion, no hay fecha registrada');
+        return;
+      }
+      final lastDateOnly = date_utils.DateUtils.dateOnly(lastDate);
+
+      if (date_utils.DateUtils.isAfterDay(today, lastDateOnly)) {
+        final daysPassed = date_utils.DateUtils.daysBetween(
+          lastDateOnly,
+          today,
+        );
+        print('🔄 Counter: Cambio de día detectado al iniciar');
+        print(
+          '📅 Counter: Última fecha: ${date_utils.DateUtils.formatDate(lastDateOnly)}',
+        );
+        print(
+          '📅 Counter: Fecha actual: ${date_utils.DateUtils.formatDate(today)}',
+        );
+        print('📊 Counter: Días transcurridos: $daysPassed');
+        print('✨ Counter: Iniciando nuevo día con contadores en 0');
+      } else if (date_utils.DateUtils.isSameDay(today, lastDateOnly)) {
+        print('Counter: misma fecha, no hacer nada');
+      } else {
+        // Caso edge: fecha del sistema retrocedió
+        print('⚠️ Counter: ADVERTENCIA - La fecha del sistema retrocedió');
+        print(
+          '📅 Counter: Última fecha en BD: ${date_utils.DateUtils.formatDate(lastDateOnly)}',
+        );
+        print(
+          '📅 Counter: Fecha del sistema: ${date_utils.DateUtils.formatDate(today)}',
+        );
+      }
+    } catch (e) {
+      print('❌ Counter: Error en checkForDayChangeOnInit: $e');
+    }
   }
 }

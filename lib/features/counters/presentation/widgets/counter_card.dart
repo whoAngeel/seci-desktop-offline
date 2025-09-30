@@ -28,7 +28,7 @@ class CounterCard extends ConsumerWidget {
               name,
               style: Theme.of(context).textTheme.titleSmall?.copyWith(
                 fontWeight: FontWeight.bold,
-                fontSize: 24,
+                fontSize: 22,
               ),
               textAlign: TextAlign.center,
             ),
