@@ -6,9 +6,12 @@ import 'package:seci_desktop/features/history/presentation/screen/history_screen
 import 'package:seci_desktop/shared/layouts/main_layout.dart';
 
 final GoRouter appRouter = GoRouter(
-  initialLocation: "/",
+  initialLocation: '/',
   routes: [
     ShellRoute(
+      builder: (context, state, child) {
+        return MainLayout(child: child);
+      },
       routes: [
         GoRoute(
           path: '/',
@@ -19,14 +22,6 @@ final GoRouter appRouter = GoRouter(
           ),
         ),
         GoRoute(
-          path: '/history',
-          pageBuilder: (context, state) => _buildPageWithSlideTransition(
-            context,
-            state,
-            const HistoryScreen(),
-          ),
-        ),
-        GoRoute(
           path: '/calendar',
           pageBuilder: (context, state) => _buildPageWithSlideTransition(
             context,
@@ -34,10 +29,15 @@ final GoRouter appRouter = GoRouter(
             const CalendarScreen(),
           ),
         ),
+        GoRoute(
+          path: '/history',
+          pageBuilder: (context, state) => _buildPageWithSlideTransition(
+            context,
+            state,
+            const HistoryScreen(),
+          ),
+        ),
       ],
-      builder: (context, state, child) {
-        return MainLayout(child: child);
-      },
     ),
   ],
 );
@@ -47,16 +47,19 @@ Page<void> _buildPageWithSlideTransition(
   GoRouterState state,
   Widget child,
 ) {
-  return CustomTransitionPage(
+  return CustomTransitionPage<void>(
+    key: state.pageKey,
     child: child,
     transitionsBuilder: (context, animation, secondaryAnimation, child) {
+      // Transición suave desde la derecha
       return SlideTransition(
         position: animation.drive(
           Tween(
             begin: const Offset(1.0, 0.0),
             end: Offset.zero,
-          ).chain(CurveTween(curve: Curves.bounceIn)),
+          ).chain(CurveTween(curve: Curves.easeInCirc)),
         ),
+        child: child,
       );
     },
     transitionDuration: const Duration(milliseconds: 300),
